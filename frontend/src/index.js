@@ -20,6 +20,9 @@ import UpdateUserRole from './Componentes/atualizarrole';
 import GerenciarCicloServicos from './Paginas/GerenciarCicloServ/GerenciarCicloServicos';
 import TramitarServicosAgendados from './Paginas/TramitarServicosAgendados/TramitarServicosAgendados';
 import Secretaria from './Paginas/Secretaria/secretaria';
+import Tutorial from './Componentes/Tutorial';
+import ModeloRelatorio from './Paginas/RelatorioSaídaServiços/RelatorioServiçosRealizados';
+import RelatorioTramitar from './Paginas/RelatorioTramitar/RelatorioTramitar';
 
 const router = createBrowserRouter([
   {
@@ -104,6 +107,18 @@ const router = createBrowserRouter([
       {
         path: '/secretaria',
         element: <ProtectedRoute> <Secretaria /> </ProtectedRoute>, // Rota protegida para Secretaria
+      },
+      {
+        path: '/tutorial',
+        element: <ProtectedRoute> <Tutorial /> </ProtectedRoute>, // Rota para o tutorial
+      },
+      {
+        path: '/relatorio-servicos-realizados',
+        element: <ProtectedRoute> <ModeloRelatorio /> </ProtectedRoute>, // Rota protegida para Secretaria
+      },
+      {
+        path: '/relatorio-servicos-tramitados',
+        element: <ProtectedRoute> <RelatorioTramitar /> </ProtectedRoute>, // Rota protegida para Secretaria
       },
     ],
   },
