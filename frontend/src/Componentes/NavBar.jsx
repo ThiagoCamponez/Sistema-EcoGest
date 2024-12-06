@@ -176,7 +176,7 @@ function NavBar() {
                     <span className={`arrow ${showRelatorios ? 'rotate' : ''}`}>▶</span>
                     </li>
                     {showRelatorios && (
-                    <ul className="nav flex-column ms-4">
+                    <ul className="nav flex-column ms-2">
                         <li className="nav-link px-2 py-2">
                         <Link to="/relatorio-servicos-realizados">
                             <FaTasks />
@@ -189,6 +189,12 @@ function NavBar() {
                             <span className="mx-2">Relatório: Serviços Tramitados</span>
                         </Link>
                         </li>
+                        <li className="nav-link px-2 py-2">
+                        <Link to="/relatorio-atividades-sustentaveis">
+                            <FaExchangeAlt />
+                            <span className="mx-2">Relatório: Atividades Sustentáveis</span>
+                        </Link>
+                        </li>
                     </ul>
                     )}
 
@@ -198,16 +204,6 @@ function NavBar() {
                                 <Link to="/update-role">
                                     <FaUserPlus />
                                     <span className="mx-2">Alterar Nível de Acesso</span>
-                                </Link>
-                            </li>
-                        )}
-                    </li>
-                    <li>
-                        {(isAdmin() || isDirector() || isColab()) && (
-                            <li className="nav-link px-2 py-3 fs-6">
-                                <Link to="/tutorial">
-                                    <FaQuestionCircle />
-                                    <span className="mx-2">Tutorial</span>
                                 </Link>
                             </li>
                         )}
