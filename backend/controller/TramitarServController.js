@@ -40,39 +40,33 @@ class TramitarServController {
         const { id_servico, id_secretaria, msg_motivo } = req.body;
     
         try {
-            // Verificar se o serviço existe
-            const servico = await database.ExecutaComando(
-                'SELECT agserv_id FROM realizaragserv WHERE agserv_id = ?', 
+            // Buscar o id_tiposervico correto a partir do id_servico
+            const [servico] = await database.ExecutaComando(
+                'SELECT agserv_tipoServico_id FROM realizaragserv WHERE agserv_id = ?',
                 [id_servico]
             );
     
-            if (!servico || servico.length === 0) {
+            if (!servico) {
                 return res.status(400).json({ message: `Serviço com ID ${id_servico} não encontrado` });
             }
     
-            // Verificar se a secretaria existe
-            const secretaria = await database.ExecutaComando(
-                'SELECT id FROM secretaria WHERE id = ?', 
-                [id_secretaria]
-            );
+            const id_tiposervico = servico.agserv_tipoServico_id;
     
-            if (!secretaria || secretaria.length === 0) {
-                return res.status(400).json({ message: `Secretaria com ID ${id_secretaria} não encontrada` });
-            }
-    
-            // Alteração na ordem para fins de praticidade
-            const tramitacao = new TramitarServModel(0, id_servico, id_secretaria, msg_motivo);
+            // Continuar com a tramitação
+            const tramitacao = new TramitarServModel(0, id_tiposervico, id_secretaria, msg_motivo);
             await tramitarServModel.adicionar(tramitacao);
     
             return res.status(200).json({ message: 'Tramitação registrada com sucesso' });
         } catch (error) {
             console.error('Erro ao adicionar tramitação:', error);
-            return res.status(500).json({ 
-                message: 'Erro ao registrar tramitação', 
-                error: error.message 
+            return res.status(500).json({
+                message: 'Erro ao registrar tramitação',
+                error: error.message,
             });
         }
     };
+    
+    
     
     
 

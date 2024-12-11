@@ -11,7 +11,7 @@ import {
   FormLabel,
   Modal,
 } from "react-bootstrap";
-import { FaListAlt, FaTrash, FaEdit, FaSearch, FaQuestionCircle } from "react-icons/fa";
+import { FaListAlt, FaTrash, FaEdit, FaSearch, FaQuestionCircle} from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import AtivSustService from "../../services/AtivSustService.js";
 import CaixaSelecao from "../../Componentes/CaixaSelecaoTipoAtividade.jsx";
@@ -47,13 +47,13 @@ function CriarAtivSust() {
   });
 
   const [listaAtividades, setListaAtividades] = useState(null);
-  const [tiposAtividades, setTiposAtividades] = useState([]); // Estado para armazenar os tipos de atividades
+  const [tiposAtividades, setTiposAtividades] = useState([]); 
   const [sucessoMensagem, setSucessoMensagem] = useState("");
   const [erro, setErro] = useState("");
-  const [searchName, setSearchName] = useState(""); // Estado para o campo de busca
-  const [mostrarTabela, setMostrarTabela] = useState(false); // Controla exibição da tabela filtrada
+  const [searchName, setSearchName] = useState(""); 
+  const [mostrarTabela, setMostrarTabela] = useState(false); 
   const navigate = useNavigate();
-  const { idAtivSust } = useParams(); // Obtém o ID da atividade da URL
+  const { idAtivSust } = useParams(); 
   const [errors, setErrors] = useState({});
   const [validated, setValidated] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -123,6 +123,17 @@ function CriarAtivSust() {
     }
   }, [sucessoMensagem]);
 
+  useEffect(() => {
+    if (erro) {
+      const timer = setTimeout(() => {
+        setErro("");
+      }, 3000); // 3 segundos
+  
+      return () => clearTimeout(timer); // Limpa o temporizador quando o componente for desmontado
+    }
+  }, [erro]);
+  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAtividade((prev) => ({ ...prev, [name]: value }));
@@ -151,12 +162,12 @@ function CriarAtivSust() {
   const handleSalvar = async (event) => {
     event.preventDefault();
     const isValid = validateFields();
-
+  
     if (!isValid) {
       setErro("Por favor, corrija os campos em vermelho.");
       return;
     }
-
+  
     try {
       const dados = {
         id: atividade.id,
@@ -172,7 +183,7 @@ function CriarAtivSust() {
         criar_horarioFinal: atividade.criar_horarioFinal,
         criar_descricao: atividade.criar_descricao,
       };
-
+  
       if (!idAtivSust) {
         await ativSustService.adicionar(dados); // Caso seja um novo cadastro
         setSucessoMensagem("Atividade cadastrada com sucesso!");
@@ -180,51 +191,85 @@ function CriarAtivSust() {
         await ativSustService.atualizar(idAtivSust, dados); // Atualização no banco de dados
         setSucessoMensagem("Atividade atualizada com sucesso!");
       }
-
+  
       await listarAtividades(); // Atualiza a lista de atividades
-      navigate("/criarativsust");
+  
+      // Redefine o formulário
+      setAtividade({
+        id: 0,
+        criar_nome: "",
+        criar_cpf: "",
+        criar_contato: "",
+        criar_endereco: "",
+        criar_bairro: "",
+        criar_numero: "",
+        tipoAtividade: {
+          id: 0,
+          nome: "",
+        },
+        criar_data: "",
+        criar_horarioInicial: "",
+        criar_horarioFinal: "",
+        criar_descricao: "",
+      });
     } catch (error) {
       setErro(`Erro ao salvar a atividade: ${error.message}`);
     }
   };
+  
 
   const handleAtualizar = async () => {
     const isValid = validateFields(); // Valida os campos antes de atualizar
     if (!isValid) return;
-
+  
     try {
       const dados = {
-        id: atividade.id,
+        id: atividade.id, // Use o ID correto aqui
         criar_nome: atividade.criar_nome,
         criar_cpf: atividade.criar_cpf,
         criar_contato: atividade.criar_contato,
         criar_endereco: atividade.criar_endereco,
         criar_bairro: atividade.criar_bairro,
         criar_numero: atividade.criar_numero,
-        tipoAtividade: atividade.tipoAtividade.id,
+        tipoAtividade: atividade.tipoAtividade.id, // Envia apenas o ID do tipo
         criar_data: atividade.criar_data,
         criar_horarioInicial: atividade.criar_horarioInicial,
         criar_horarioFinal: atividade.criar_horarioFinal,
         criar_descricao: atividade.criar_descricao,
       };
-
-      await ativSustService.atualizar(atividade.id, dados);
-
+  
+      await ativSustService.atualizar(atividade.id, dados); // Atualiza no backend
+  
       const atividadesAtualizadas = await ativSustService.obterTodos();
       const atividadesComDataFormatada = atividadesAtualizadas.map((atividade) => ({
         ...atividade,
         criar_data: formatarData(atividade.criar_data),
       }));
-
+  
       setListaAtividades(atividadesComDataFormatada); // Atualiza a lista com as datas formatadas
-
       setSucessoMensagem("Atividade atualizada com sucesso!");
-      navigate("/criarativsust");
+  
+      // Limpa o formulário e sai do modo de edição
+      setAtividade({
+        id: 0,
+        criar_nome: "",
+        criar_cpf: "",
+        criar_contato: "",
+        criar_endereco: "",
+        criar_bairro: "",
+        criar_numero: "",
+        tipoAtividade: { id: 0, nome: "" },
+        criar_data: "",
+        criar_horarioInicial: "",
+        criar_horarioFinal: "",
+        criar_descricao: "",
+      });
     } catch (error) {
       setErro(`Erro ao atualizar a atividade: ${error.message}`);
     }
   };
-
+  
+  
   const handleExcluir = async (id) => {
     if (window.confirm("Tem certeza que deseja excluir?")) {
       await ativSustService.excluir(id);
@@ -236,12 +281,26 @@ function CriarAtivSust() {
   const handleEditar = async (id) => {
     try {
       const dados = await ativSustService.obterPorId(id);
-      dados.criar_data = formatarData(dados.criar_data); // Formata a data ao editar
-      setAtividade(dados); // Preenche o formulário com a atividade a ser editada
+  
+      console.log("Dados recebidos para edição:", dados); // Verifique os dados retornados da API
+  
+      setAtividade({
+        ...dados,
+        id: dados.criar_id, // Certifique-se de que o ID correto está sendo usado
+        criar_data: dados.criar_data.split("T")[0], // Formatar data para YYYY-MM-DD
+        tipoAtividade: {
+          id: dados.id, // Use o ID correto do tipo de atividade
+          nome: dados.tipo_atividade || "", // Ajuste para o nome do tipo
+        },
+      });
+  
+      setErro(""); // Limpa mensagens de erro
     } catch (error) {
+      console.error("Erro ao obter atividade:", error);
       setErro("Erro ao obter dados da atividade.");
     }
   };
+  
 
   // Filtro por nome
   const filteredAtividades = listaAtividades?.filter((atividade) =>
@@ -262,8 +321,7 @@ function CriarAtivSust() {
             title="Ajuda"
           />
         </span>
-      </h2>
-
+      </h2>
       <Container className="mt-2">
         <Card>
           <Card.Header as="h5">Informações do Solicitante</Card.Header>
@@ -480,12 +538,14 @@ function CriarAtivSust() {
 
                   <Row className="align-items-center d-md-flex justify-content-md-center">
                     <Col lg={2}>
-                      <Button variant="success" type="submit" className="w-100">
+                      <Button variant="success" type="submit" className="w-100" disabled={atividade.id !== 0} // Desativa o botão se estiver no modo de edição 
+                      >
                         Cadastrar
                       </Button>
                     </Col>
                     <Col lg={2}>
-                      <Button variant="warning" onClick={handleAtualizar} className="w-100">
+                      <Button variant="warning" onClick={handleAtualizar} className="w-100"  disabled={atividade.id === 0} // Desativa o botão de atualizar se não estiver no modo de edição
+                      >
                         Atualizar
                       </Button>
                     </Col>
@@ -547,7 +607,7 @@ function CriarAtivSust() {
                 <tbody>
                   {filteredAtividades.map((atividade) => (
                     <tr key={atividade.criar_id}>
-                      <td>{atividade.criar_id}</td>
+                      <td>{atividade.criar_id}</td> {/* Mostra o ID correto */}
                       <td colSpan={3}>{atividade.criar_nome}</td>
                       <td colSpan={2}>{atividade.criar_cpf}</td>
                       <td colSpan={2}>{atividade.criar_contato}</td>
@@ -557,14 +617,16 @@ function CriarAtivSust() {
                         <div className="d-flex">
                           <Button
                             variant="link"
-                            onClick={() => handleEditar(atividade.criar_id)}
-                            className="text-primary fs-5">
+                            onClick={() => handleEditar(atividade.criar_id)} // Passe o ID correto
+                            className="text-primary fs-5"
+                          >
                             <FaEdit />
                           </Button>
                           <Button
                             variant="link"
-                            onClick={() => handleExcluir(atividade.criar_id)}
-                            className="text-danger fs-5">
+                            onClick={() => handleExcluir(atividade.criar_id)} // Passe o ID correto
+                            className="text-danger fs-5"
+                          >
                             <FaTrash />
                           </Button>
                         </div>
@@ -572,6 +634,7 @@ function CriarAtivSust() {
                     </tr>
                   ))}
                 </tbody>
+
               </Table>
             ) : (
               <div className="text-center">Nenhum item para listar</div>
@@ -624,7 +687,7 @@ function CriarAtivSust() {
             </li>
           </ol>
           <img
-            src="/tutorial-criar-atividade-sustentavel.png"
+            src="/01.jpg"
             alt="Tutorial de Criação de Atividade Sustentável"
             className="img-fluid rounded shadow mt-3"
           />
@@ -634,11 +697,9 @@ function CriarAtivSust() {
             Fechar
           </Button>
         </Modal.Footer>
-      </Modal>
-
+      </Modal>
     </div>
   );
 }
 
 export default CriarAtivSust;
-

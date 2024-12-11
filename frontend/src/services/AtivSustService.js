@@ -61,18 +61,18 @@ class AtivSustService {
 
     // Obter uma atividade sustentável por ID
     async obterPorId(id) {
-        const response = await fetch(`${API_BASE_URL}/criarativsust/${id}`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Erro ao obter a atividade sustentável por ID');
+        try {
+          const resposta = await fetch(`http://localhost:3001/criarativsust/${id}`);
+          if (!resposta.ok) {
+            throw new Error(`Erro ao obter atividade com ID ${id}`);
+          }
+          return await resposta.json();
+        } catch (error) {
+          console.error("Erro ao obter atividade por ID:", error);
+          throw error;
         }
-        const dados = await response.json();
-        return dados;
-    }
+      }
+      
 
     // Excluir uma atividade sustentável
     async excluir(idAtividade) {

@@ -24,17 +24,18 @@ class TramitarServModel {
                 sec.nome_secretaria
             FROM 
                 tramitarserv t
-            JOIN 
+            LEFT JOIN 
                 realizaragserv r ON t.id_tiposervico = r.agserv_id
-            JOIN 
+            LEFT JOIN 
                 cadastrotiposdeservico cts ON t.id_tiposervico = cts.id
-            JOIN 
+            LEFT JOIN 
                 secretaria sec ON t.id_secretaria = sec.id
             ORDER BY 
                 t.data_tramitacao DESC;
         `);
         return listaTramitacoes;
     }
+    
     async obterPorId(id) {
         const result = await database.ExecutaComando(
             `SELECT t.*, s.nome_secretaria, cts.nome AS tipo_servico

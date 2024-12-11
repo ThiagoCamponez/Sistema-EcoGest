@@ -104,7 +104,7 @@ class CriarAtivSustModel {
                 criar_descricao = ?
             WHERE criar_id = ?
         `;
-
+    
         const valores = [
             dadosAtividade.criar_nome,
             dadosAtividade.criar_cpf,
@@ -119,16 +119,17 @@ class CriarAtivSustModel {
             dadosAtividade.criar_descricao,
             this.#id
         ];
-
+    
         try {
             console.log('Atualizando atividade com ID:', this.#id);
             await database.ExecutaComandoNonQuery(query, valores);
             console.log('Atualização realizada com sucesso.');
         } catch (error) {
             console.error('Erro ao atualizar a atividade:', error);
+            throw error; // Rethrow the error to handle it in the controller
         }
     }
-
+    
     // Método para obter todas as atividades do banco de dados
     async obterTodos() {
         const listaAtivSust = await database.ExecutaComando(`
@@ -153,8 +154,13 @@ class CriarAtivSustModel {
     // Método para obter uma atividade por ID
     async obterPorId(id) {
         const result = await database.ExecutaComando('SELECT * FROM criarativsust WHERE criar_id = ?', [id]);
+        if (result[0]) {
+            // Formatando a data para YYYY-MM-DD
+            result[0].criar_data = new Date(result[0].criar_data).toISOString().split('T')[0];
+        }
         return result[0];
     }
+    
 
     // Método para excluir uma atividade do banco de dados
     async excluir() {

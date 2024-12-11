@@ -84,28 +84,24 @@ class CriarAtivSustController {
 
     async atualizar(req, res) {
         const id = req.params.id;
-        const {
-            criar_nome,
-            criar_cpf,
-            criar_contato,
-            criar_endereco,
-            criar_bairro,
-            criar_numero,
-            tipoAtividade,  // Usamos `tipoAtividade` como no outro controller
-            criar_data,
-            criar_horarioInicial,
-            criar_horarioFinal,
-            criar_descricao
-        } = req.body;
+        const { criar_nome, criar_cpf, criar_contato, criar_endereco, criar_bairro, criar_numero, tipoAtividade, criar_data, criar_horarioInicial, criar_horarioFinal, criar_descricao } = req.body;
     
-        // Log para verificar os dados recebidos
         console.log('Dados recebidos para atualização:', req.body);
     
+        // Verifica se todos os campos estão preenchidos
         if (!criar_nome || !criar_cpf || !criar_contato || !criar_endereco || !criar_bairro || !criar_numero || !tipoAtividade || !criar_data || !criar_horarioInicial || !criar_horarioFinal || !criar_descricao) {
             return res.status(400).json({ message: 'Por favor, informe todos os dados da Atividade Sustentável.' });
         }
     
         try {
+            const criarAtivSustModel = new CriarAtivSustModel();
+            const atividadeExistente = await criarAtivSustModel.obterPorId(id);
+    
+            if (!atividadeExistente) {
+                return res.status(404).json({ message: 'Atividade sustentável não encontrada.' });
+            }
+    
+            // Atualiza os dados da atividade
             const atividadeSust = new CriarAtivSustModel(
                 id,
                 criar_nome,
@@ -114,7 +110,7 @@ class CriarAtivSustController {
                 criar_endereco,
                 criar_bairro,
                 criar_numero,
-                tipoAtividade,  // ID do tipo de atividade
+                tipoAtividade,
                 criar_data,
                 criar_horarioInicial,
                 criar_horarioFinal,
@@ -125,10 +121,10 @@ class CriarAtivSustController {
             return res.status(200).json({ message: 'Atividade sustentável atualizada com sucesso.' });
         } catch (error) {
             console.error('Erro ao atualizar atividade sustentável:', error);
-            return res.status(500).json({ message: 'Erro ao atualizar atividade sustentável.', error: error.message });
+            return res.status(500).json({ message: 'Erro ao atualizar atividade sustentável.' });
         }
     }
-
+    
     async excluir(req, res) {
         const id = req.params.id;
 

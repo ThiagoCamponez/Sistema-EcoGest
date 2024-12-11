@@ -119,7 +119,7 @@ const router = createBrowserRouter([
       {
         path: '/relatorio-atividades-sustentaveis',
         element: <ProtectedRoute> <RelatorioAtividades /> </ProtectedRoute>, // Rota protegida para Secretaria
-      },
+      }
     ],
   },
 ]);

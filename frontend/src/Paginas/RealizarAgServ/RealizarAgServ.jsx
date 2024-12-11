@@ -117,6 +117,7 @@ function RealizarAgServ() {
         descricaoServico: '',
         tipoServico: { id: 0, nome: '' }
       });
+      setIdAgendamento(null);
 
       listarAgendamentos();
       navigate('/RealizarAgServ');
@@ -469,12 +470,12 @@ function RealizarAgServ() {
                   </Row>
                   <Row className="align-items-center d-md-flex justify-content-md-center">
                     <Col lg={2}>
-                      <Button variant="success" type="submit" className="w-100">
+                      <Button variant="success" type="submit" className="w-100" disabled={idAgendamento !== null}>
                         <FaSave /> Agendar
                       </Button>
                     </Col>
                     <Col lg={2}>
-                      <Button variant="warning" onClick={handleAtualizar} className="w-100">
+                      <Button variant="warning" onClick={handleAtualizar} className="w-100" disabled={idAgendamento === null}>
                         <FaEdit /> Atualizar
                       </Button>
                     </Col>

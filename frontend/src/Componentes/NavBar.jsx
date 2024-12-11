@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './NavBar.css';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FaClipboardList, FaRegUser, FaUserPlus, FaBars, FaHome, FaTractor, FaCogs, FaSignOutAlt, FaRegClone, FaTasks, FaExchangeAlt, FaQuestionCircle } from 'react-icons/fa';
+import { FaClipboardList, FaRegUser, FaUserPlus, FaBars, FaHome, FaTractor, FaCogs, FaSignOutAlt, FaRegClone, FaTasks, FaExchangeAlt } from 'react-icons/fa';
 import { Container } from 'react-bootstrap';
 import Footer from '../Componentes/Footer.jsx';
 import { useNavigate } from 'react-router-dom';
@@ -195,6 +195,7 @@ function NavBar() {
                             <span className="mx-2">Relatório: Atividades Sustentáveis</span>
                         </Link>
                         </li>
+
                     </ul>
                     )}
 

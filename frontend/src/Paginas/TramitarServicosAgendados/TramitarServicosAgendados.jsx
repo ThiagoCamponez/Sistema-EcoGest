@@ -325,8 +325,6 @@ function TramitarServicosAgendados() {
                 <thead>
                   <tr>
                     <th>ID Tramitação</th>
-                    <th>Nome do Solicitante</th>
-                    <th>CPF Solicitante</th>
                     <th>Mensagem</th>
                     <th>Serviço Agendado</th>
                     <th>Secretaria</th>
@@ -338,12 +336,6 @@ function TramitarServicosAgendados() {
                   {tramitacoesFiltradas.map((tramitacao) => (
                     <tr key={tramitacao.id}>
                       <td>{tramitacao.id}</td>
-                      <td>{tramitacao.nomeSolicitante}</td>
-                      <td>
-                        {tramitacao.cpfSolicitante
-                          ? formatCPF(tramitacao.cpfSolicitante)
-                          : "-"}
-                      </td>
                       <td>{tramitacao.msg_motivo}</td>
                       <td>{tramitacao.tipo_servico}</td>
                       <td>{tramitacao.nome_secretaria}</td>
